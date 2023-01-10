@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>haorwen的公益CDN</title>
+	<style>
+		.text1 {
+		        font-size: 30px;
+				color: gray;
+		      }
+			  .text2 {
+		        font-size: 40px;
+		      }
+	</style>
+	<link href="https://down.onmicrosoft.cn/qiniu/u20221021b3a89013_1673266432064_18413624_file.css" rel="stylesheet">
+	<link href="" rel="stylesheet">
+	<link href="https://down.onmicrosoft.cn/qiniu/u202210176ba36766_1673266498082_14361227_file.css" rel="stylesheet">
+
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,300,600,400' rel='stylesheet' type='text/css'>
+
+	<link rel="shortcut icon" href="https://down.onmicrosoft.cn/qiniu/u202210176ba36766_1673267246888_10199769_file.ico">
+	<link rel="icon" sizes="16x16 32x32 64x64" href="https://down.onmicrosoft.cn/qiniu/u202210176ba36766_1673267246888_10199769_file.ico">
+</head>
+
+<body>
+	<main>
+		<h1>haorwen的公益CDN</h1>
+
+		<div class="row">
+			<div class="col-md-6">
+				<section class="widget">
+					<header>
+						<!-- HTML code -->
+						<span class="label label-default fw-normal"></span>
+
+						<!-- JavaScript code -->
+						<script>
+							const dateElement = document.querySelector('.label');
+							  const now = new Date();
+							  dateElement.textContent = now.toLocaleDateString('zh-CN', {month: '2-digit', day: '2-digit', year: 'numeric'});
+						</script>
+
+					</header>
+					<div class="widget-body">
+						<div>
+							<span class="text2">当前CDN状态:<span class="text2">
+									<span id="status">请求中</span>
+						</div>
+						<div>
+							<span class="text2">总请求数:<span class="text2">
+									<span id="requests">请求中</span>
+						</div>
+						<div>
+							<span class="text2">总流量:<span class="text2">
+									<span id="total-bytes">请求中</span>
+						</div>
+						<div>
+							<span class="text2">CDN总运行时间:
+						</div>
+						<div>
+							<span class="text1">
+								<span id="total_time">请求中</span>
+						</div>
+						<script src="https://npm.elemecdn.com/axios/dist/axios.min.js"></script>
+						<script>
+							axios.get('https://api.gcorelabs.com/cdn/clients/me', {
+							    headers: {
+							      'Authorization': 'APIKey 4254$48d2889de75243fd37555cdd7b6ac73a87e1211ecc19d2202c7ab1f6f5aa75b934982fc9b6a11560b10cd8193ae76a1b6ba2b77a9db2e37b287c8d72cae2d461'
+							    }
+							  })
+							    .then(function (response) {
+							      if (response.data.service.status === 'active') {
+							        document.querySelector("#status").innerHTML = '正常';
+							        document.querySelector("#status").style.color = 'green';
+							      } else {
+							        document.querySelector("#status").innerHTML = '异常';
+							        document.querySelector("#status").style.color = 'red';
+							      }
+							    })
+							    .catch(function (error) {
+							      console.log(error);
+							    });
+						</script>
+						<script>
+							function convertToGB(bytes) {
+							        return (bytes / 1073741824).toFixed(2);
+							      }
+							axios.get('https://api.gcorelabs.com/cdn/statistics/series?service=CDN&from=2022-12-01T00:00:00.000&to=2025-1-01T01:00:00.000&metrics=total_bytes&metrics=requests&group_by=resource', {
+							  headers: {
+							    'Authorization': 'APIKey 4254$48d2889de75243fd37555cdd7b6ac73a87e1211ecc19d2202c7ab1f6f5aa75b934982fc9b6a11560b10cd8193ae76a1b6ba2b77a9db2e37b287c8d72cae2d461'
+							  }
+							})
+							  .then(function (response) {
+							    // response.data contains the API response
+							    const metrics = response.data.resource['149282'].metrics;
+							    const requests = metrics.requests;
+							    const totalBytes = convertToGB(metrics.total_bytes);
+							    // Now you can use the data to update the HTML, for example:
+							    document.querySelector("#requests").textContent = requests;
+							    document.querySelector("#total-bytes").textContent = `${totalBytes} GB`;
+							  })
+							  .catch(function (error) {
+							    console.log(error);
+							  });
+						</script>
+						<script>
+							function computeTimeDifference(startDate, endDate) {
+							  const diff = endDate - startDate; // difference in milliseconds
+							  const diffInMinutes = diff / 60000; // convert to minutes
+							  const diffInHours = diffInMinutes / 60; // convert to hours
+							  const diffInDays = diffInHours / 24; // convert to days
+							  const diffInMonths = diffInDays / 30; // convert to months (approximate)
+							  const months = Math.floor(diffInMonths);
+							  const days = Math.floor(diffInDays % 30);
+							  const hours = Math.floor(diffInHours % 24);
+							  const minutes = Math.floor(diffInMinutes % 60);
+							  return `${months}月${days}天 ${hours}小时${minutes}分`;
+							}
+							const startDate = new Date(2023, 0, 8, 8, 55); // current UTC time
+							const endDate = new Date(); // 1/8/23, 8:55
+							const timeDifference = computeTimeDifference(startDate, endDate);
+							document.querySelector("#total_time").textContent = timeDifference;
+						</script>
+
+
+						<p>ps:上方数据基于实时获取，若网络环境不佳可能获取失败（表现为一直请求中）一般更换网络即可解决。</p>
+
+					</div>
+				</section>
+			</div>
+			<div class="col-md-6">
+				<section class="widget">
+					<header>
+						<h2>本项目相关</h2>
+					</header>
+					<div class="widget-body">
+
+						<p>
+							众所周知， <a href="https://www.jsdelivr.com/">jsdelivr</a>在国内的访问体验并不算理想，于是就开放了这个cdn供国内开发者使用，更多详情可在旁边的数据统计中查看。本cdn使用方式并没有什么不同，只需将链接中的cdn.jsdelivr.net替换为jsd.haorwen.tk即可使用（请不要用于加速图片，滥用可能被封禁！），如果cdn出了什么问题也可以发送邮件给<a href="mailto:haorwen@qq.com">haorwen@qq.com</a>
+						</p>
+						<p>本人是纯前端小白，在开发本项目的过程中非常感谢<a href="https://icodeq.com/"> @zkeq </a>大佬的帮助，<a href="https://chat.openai.com/chat">ChatGPT</a>也是一个非常好用的工具，本网页托管于<a href="https://vercel.com/">Vercel</a>
+						</p>
+					</div>
+				</section>
+			</div>
+		</div>
+
+		<footer>
+			<p class="text-center">
+				<span class="fw-semi-bold">cdn.haorwen.tk</span> 2023 | haorwen的公益cdn | <a href="https://github.com/haorwen">
+					<i class="fa fa-github"></i> 我的GitHub
+				</a>
+			</p>
+		</footer>
+	</main>
+
+	<script src="https://lib.baomitu.com/jquery/1.12.4/jquery.min.js"></script>
+</body>
+
+</html>
