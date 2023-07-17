@@ -89,7 +89,7 @@
 							        return (bytes / 1073741824).toFixed(2);
 							      }
 							// 获取当前时间（UTC）并转化为ISO 8601/RFC 3339 格式
-let now = new Date().toISOString();
+let nowtime = new Date().toISOString();
 
 // 获取90天前的时间（UTC）
 let ninetyDaysAgo = new Date();
@@ -97,7 +97,7 @@ ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 ninetyDaysAgo = ninetyDaysAgo.toISOString();
 
 // 创建新的链接，插入from和to时间
-let link = `https://api.gcore.com/cdn/statistics/series?service=CDN&from=${ninetyDaysAgo}&to=${now}&metrics=total_bytes&metrics=requests&group_by=resource`;
+let link = `https://api.gcore.com/cdn/statistics/series?service=CDN&from=${ninetyDaysAgo}&to=${nowtime}&metrics=total_bytes&metrics=requests&group_by=resource`;
 
 console.log(link);
 							axios.get(link, {
